@@ -18,6 +18,7 @@ def analizar(Usuario,Contraseña,Cuenta):
     browser.implicitly_wait(5)
     browser.get('https://www.instagram.com/')
 
+    #Esto es para hacer el programa que labure en segundo plano, pero tiene bugs
     '''options = webdriver.ChromeOptions()
     options.add_argument("headless")
     browser = webdriver.Chrome(chrome_options=options)
@@ -56,8 +57,8 @@ def analizar(Usuario,Contraseña,Cuenta):
         browser.execute_script("arguments[0].scrollIntoView();", scr1)
         sleep(0.001)
         text = scr1.text
-        list = text.split()
-        seguidores.append(list[0])
+        lista = text.split()
+        seguidores.append(lista[0])
 
     browser.refresh()
 
@@ -71,16 +72,32 @@ def analizar(Usuario,Contraseña,Cuenta):
         browser.execute_script("arguments[0].scrollIntoView();", scr1)
         sleep(0.005)
         text = scr1.text
-        list = text.split()
-        seguidos.append(list[0])
+        lista = text.split()
+        seguidos.append(lista[0])
 
     browser.quit()
 
-
-def noMeSiguen(seguidores,seguidos):
+    #Esta es la parte que comparo las listas
     seguidoresMutuos = set(seguidores).intersection(seguidos)
-    noSeguidores = (set(seguidos)-seguidoresMutuos)
-    return noSeguidores
+    noSeguidores2 = (set(seguidos)-seguidoresMutuos)
+    noSeguidores = list(noSeguidores2)
+    print(noSeguidores)
+    #abro nueva ventana con los resultados
+    ventanaAnalisis = Toplevel()
+    ventanaAnalisis.geometry("400x400")
+
+    #hago display de las listas en la ventana
+    i = 0
+    verticalBar = Scale(ventanaAnalisis,from_=0, to=200).grid(row=0,column = 1)
+    w = Listbox(ventanaAnalisis,yscrollcommand = verticalBar)
+    w.grid(row = 0, column = 0)
+    for i in range(len(noSeguidores)):
+        print(noSeguidores[i])
+        w.insert(END, noSeguidores[i])
+        i = i + 1
+
+
+    
 
 
 
