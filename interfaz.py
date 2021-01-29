@@ -79,22 +79,23 @@ def analizar(Usuario,Contraseña,Cuenta):
 
     #Esta es la parte que comparo las listas
     seguidoresMutuos = set(seguidores).intersection(seguidos)
-    noSeguidores2 = (set(seguidos)-seguidoresMutuos)
-    noSeguidores = list(noSeguidores2)
-    print(noSeguidores)
+    noSeguidores = list(set(seguidos)-seguidoresMutuos)
+    fans = list(set(seguidores) - seguidoresMutuos)
+    #noSeguidores = list(noSeguidores2)
     #abro nueva ventana con los resultados
     ventanaAnalisis = Toplevel()
     ventanaAnalisis.geometry("400x400")
 
     #hago display de las listas en la ventana
-    i = 0
     verticalBar = Scale(ventanaAnalisis,from_=0, to=200).grid(row=0,column = 1)
-    w = Listbox(ventanaAnalisis,yscrollcommand = verticalBar)
-    w.grid(row = 0, column = 0)
-    for i in range(len(noSeguidores)):
-        print(noSeguidores[i])
-        w.insert(END, noSeguidores[i])
-        i = i + 1
+    #LISTA NO SEGUIDORES
+    listaNoSeguidores = Listbox(ventanaAnalisis,yscrollcommand = verticalBar)
+    listaNoSeguidores.grid(row = 0, column = 0)
+    listaNoSeguidores.insert(END, *noSeguidores)
+    #LISTA DE FANS
+    listaFans = Listbox(ventanaAnalisis,yscrollcommand = verticalBar)
+    listaFans.grid(row = 0, column = 2)
+    listaFans.insert(END, *fans)
 
 
     
