@@ -84,19 +84,25 @@ def analizar(Usuario,Contraseña,Cuenta):
     #noSeguidores = list(noSeguidores2)
     #abro nueva ventana con los resultados
     ventanaAnalisis = Toplevel()
-    ventanaAnalisis.geometry("400x400")
-
+    #titulos
+    
     #hago display de las listas en la ventana
-    verticalBar = Scale(ventanaAnalisis,from_=0, to=200).grid(row=0,column = 1)
+    #Slider de las listas
+    verticalBar = Scrollbar(ventanaAnalisis)
+    verticalBar.pack(fill = BOTH, side = LEFT)
+    verticalBar2 = Scrollbar(ventanaAnalisis)
+    verticalBar2.pack(fill = BOTH, side = RIGHT)
     #LISTA NO SEGUIDORES
-    listaNoSeguidores = Listbox(ventanaAnalisis,yscrollcommand = verticalBar)
-    listaNoSeguidores.grid(row = 0, column = 0)
+    listaNoSeguidores = Listbox(ventanaAnalisis,yscrollcommand = verticalBar.set)
+    listaNoSeguidores.pack(side = LEFT)
     listaNoSeguidores.insert(END, *noSeguidores)
     #LISTA DE FANS
     listaFans = Listbox(ventanaAnalisis,yscrollcommand = verticalBar)
-    listaFans.grid(row = 0, column = 2)
+    listaFans.pack(side = RIGHT)
     listaFans.insert(END, *fans)
-
+    #config sliders
+    verticalBar.config(command = listaNoSeguidores.yview)
+    verticalBar2.config(command = listaFans.yview)
 
     
 
@@ -113,7 +119,7 @@ def abrirVentanaPrincipal():
     nuevaVentana = Toplevel()
     nuevaVentana.geometry("400x400")
     #DEF
-    botonAnalizar = Button(nuevaVentana,padx = 30,pady = 15, text = "Analizar seguidores",command = lambda : analizar(usuario,contraseña,"tobi_ilicic") )
+    botonAnalizar = Button(nuevaVentana,padx = 30,pady = 15, text = "Analizar seguidores",command = lambda : analizar(usuario,contraseña,"sofiviera3") )
     botonBuscar = Button(nuevaVentana,padx = 30,pady = 15, text = "¿Vio mi historia?")
     #Display
     botonAnalizar.grid(row = 0, column = 0,padx = 120,pady = 100)
