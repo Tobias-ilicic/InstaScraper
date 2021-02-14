@@ -1,6 +1,10 @@
 from tkinter import *
 from PIL import ImageTk, Image
 import instaloader
+from time import sleep
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
 
 root = Tk()
 root.title("InstaScrap")
@@ -8,12 +12,12 @@ root.iconbitmap("C:/Users/tobi/Desktop/Proyectos/tkinter/imagenes/instagram1.ico
 
 def analizar(Usuario,Contraseña,Cuenta):
     L = instaloader.Instaloader()
-    # Login or load session
+    # Logear
     L.login(Usuario, Contraseña)        # (login)
-    # Obtain profile metadata
+    # Obtiene la metadata del perfil
     profile = instaloader.Profile.from_username(L.context, Cuenta)
 
-    # Print list of followees
+    # Scrapeo los seguidores y seguidos
     lista_Seguidores = []
     for seguidor in profile.get_followers():
         lista_Seguidores.append(seguidor.username)
@@ -53,6 +57,38 @@ def analizar(Usuario,Contraseña,Cuenta):
     #config sliders
     verticalBar.config(command = listaNoSeguidores.yview)
     verticalBar2.config(command = listaFans.yview)
+    #Botones
+    def unfollow():
+        options = Options()
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        options.add_argument(
+        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
+        browser = webdriver.Chrome(options=options)
+        browser.implicitly_wait(5)
+        browser.get('https://www.instagram.com/')
+        sleep(10)
+        usuario_input = browser.find_element_by_xpath("/html/body/div[1]/section/main/article/div[2]/div[1]/div/form/div/div[1]/div/label/input")
+        #browser.execute_script("arguments[0].scrollIntoView();", usuario_input)
+        contraseña_input = browser.find_element_by_xpath("/html/body/div[1]/section/main/article/div[2]/div[1]/div/form/div/div[2]/div/label")
+        #browser.execute_script("arguments[0].scrollIntoView();", contraseña_input)
+        usuario_input.send_keys(Usuario)
+        contraseña_input.send_keys(Contraseña)
+        IniciarSesion = browser.find_element_by_xpath("//button[@type='submit']")
+        IniciarSesion.click()
+        sleep(3)
+        browser.get('https://www.instagram.com/'+ listaNoSeguidores.get(listaNoSeguidores.curselection()))
+        sleep(2)
+        try:                                 
+            noSeguir = browser.find_element_by_xpath("/html/body/div[1]/section/main/div/header/section/div[1]/div[1]/div/div[2]/div/span/span[1]/button")
+        except:
+            noSeguir = browser.find_element_by_xpath("/html/body/div[1]/section/main/div/header/section/div[1]/div[2]/div/div[2]/div/span/span[1]/button")
+        noSeguir.click()
+        sleep(1)
+        noSeguir2 = browser.find_element_by_xpath('/html/body/div[4]/div/div/div/div[3]/button[1]')
+        noSeguir2.click()
+    unfollow_btn = Button(ventanaAnalisis,text = "Unfollow",command = unfollow)
+    unfollow_btn.pack()
 
 
     
@@ -66,11 +102,10 @@ def analizar(Usuario,Contraseña,Cuenta):
 def abrirVentanaPrincipal():
     usuario = str(usuarioInput.get())
     contraseña = str(contraseñaInput.get())
-    credenciales = [usuario,contraseña]
     nuevaVentana = Toplevel()
     nuevaVentana.geometry("400x400")
     #DEF
-    botonAnalizar = Button(nuevaVentana,padx = 30,pady = 15, text = "Analizar seguidores",command = lambda : analizar(usuario,contraseña,"santiferreyra_") )
+    botonAnalizar = Button(nuevaVentana,padx = 30,pady = 15, text = "Analizar seguidores",command = lambda : analizar(usuario,contraseña,"tobi_ilicic") )
     botonBuscar = Button(nuevaVentana,padx = 30,pady = 15, text = "¿Vio mi historia?")
     #Display
     botonAnalizar.grid(row = 0, column = 0,padx = 120,pady = 100)
